@@ -278,14 +278,3 @@ class SiteInfo:
       except Exception as e:
         self.logger.error('exception {0}:{1}'.format(self.url, str(e)))
         return self.info
-
-        
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print(' Usage: {0} url'.format(sys.argv[0]))
-        sys.exit(errno.EINVAL)
-        
-    siteinfo = SiteInfo(sys.argv[1])
-    site_info = siteinfo.get_site_info()
-    for k, v in site_info.items():
-        print(k, ':', v, '\n')
