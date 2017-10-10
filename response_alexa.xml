@@ -1,0 +1,11 @@
+<ns0:UrlInfoResponse xmlns:ns0="http://alexa.amazonaws.com/doc/2005-10-05/" xmlns:ns1="http://awis.amazonaws.com/doc/2005-07-11"><ns1:Response><ns1:OperationRequest><ns1:RequestId>6f1581c1-658e-7b92-cfc0-4cc544d25fcd</ns1:RequestId></ns1:OperationRequest><ns1:UrlInfoResult><ns1:Alexa>
+  
+  <ns1:ContentData>
+    <ns1:DataUrl type="canonical">walmart.com/</ns1:DataUrl>
+    <ns1:LinksInCount>36253</ns1:LinksInCount>
+  </ns1:ContentData>
+  <ns1:TrafficData>
+    <ns1:DataUrl type="canonical">walmart.com/</ns1:DataUrl>
+    <ns1:Rank>185</ns1:Rank>
+  </ns1:TrafficData>
+</ns1:Alexa></ns1:UrlInfoResult><ns0:ResponseStatus><ns0:StatusCode>Success</ns0:StatusCode></ns0:ResponseStatus></ns1:Response></ns0:UrlInfoResponse>

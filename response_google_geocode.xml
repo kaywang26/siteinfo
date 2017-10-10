@@ -1,0 +1,86 @@
+<GeocodeResponse>
+ <status>OK</status>
+ <result>
+  <type>premise</type>
+  <formatted_address>702 SW 8th St, Bentonville, AR 72716, USA</formatted_address>
+  <address_component>
+   <long_name>702</long_name>
+   <short_name>702</short_name>
+   <type>street_number</type>
+  </address_component>
+  <address_component>
+   <long_name>Southwest 8th Street</long_name>
+   <short_name>SW 8th St</short_name>
+   <type>route</type>
+  </address_component>
+  <address_component>
+   <long_name>Bentonville</long_name>
+   <short_name>Bentonville</short_name>
+   <type>locality</type>
+   <type>political</type>
+  </address_component>
+  <address_component>
+   <long_name>Township 8</long_name>
+   <short_name>Township 8</short_name>
+   <type>administrative_area_level_3</type>
+   <type>political</type>
+  </address_component>
+  <address_component>
+   <long_name>Benton County</long_name>
+   <short_name>Benton County</short_name>
+   <type>administrative_area_level_2</type>
+   <type>political</type>
+  </address_component>
+  <address_component>
+   <long_name>Arkansas</long_name>
+   <short_name>AR</short_name>
+   <type>administrative_area_level_1</type>
+   <type>political</type>
+  </address_component>
+  <address_component>
+   <long_name>United States</long_name>
+   <short_name>US</short_name>
+   <type>country</type>
+   <type>political</type>
+  </address_component>
+  <address_component>
+   <long_name>72716</long_name>
+   <short_name>72716</short_name>
+   <type>postal_code</type>
+  </address_component>
+  <address_component>
+   <long_name>6299</long_name>
+   <short_name>6299</short_name>
+   <type>postal_code_suffix</type>
+  </address_component>
+  <geometry>
+   <location>
+    <lat>36.3655837</lat>
+    <lng>-94.2181498</lng>
+   </location>
+   <location_type>ROOFTOP</location_type>
+   <viewport>
+    <southwest>
+     <lat>36.3642347</lat>
+     <lng>-94.2196713</lng>
+    </southwest>
+    <northeast>
+     <lat>36.3669327</lat>
+     <lng>-94.2166283</lng>
+    </northeast>
+   </viewport>
+   <bounds>
+    <southwest>
+     <lat>36.3646441</lat>
+     <lng>-94.2196713</lng>
+    </southwest>
+    <northeast>
+     <lat>36.3665233</lat>
+     <lng>-94.2166283</lng>
+    </northeast>
+   </bounds>
+  </geometry>
+  <partial_match>true</partial_match>
+  <place_id>ChIJvaFVzaYayYcRMJ15sFqzaFo</place_id>
+ </result>
+</GeocodeResponse>
