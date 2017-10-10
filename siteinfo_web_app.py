@@ -121,7 +121,7 @@ class SiteInfoWeb(object):
         return self._template(section)        
         
     ############################################################################
-    #                  Write site information to xml file
+    #                  Display site information
     ############################################################################
     @cherrypy.expose
     def submit_url(self, urlinput):
