@@ -21,7 +21,6 @@ from siteinfo import SiteInfo
 # These are in configuration file
 server_name = None
 server_port = None
-outdir = None
 
 def parse_config(file):
     global server_name, server_port, outdir   
@@ -31,7 +30,6 @@ def parse_config(file):
     
     server_name = config.get('app', 'server_name')
     server_port = int( config.get('app', 'server_port') )
-    outdir = config.get('app', 'outdir')
     
     
 class SiteInfoWeb(object):

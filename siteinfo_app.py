@@ -244,6 +244,11 @@ class SiteInfo:
         self.get_ecommerce_from_builtwith(builtwith_url) 
         
         '''
+        Get Alexa ranking from Alexa Web Information Service API
+        '''
+        self.get_ranking_from_awis(self.url)        
+        
+        '''
         Get Admin data by calling whoisxmlapi RESTful API
         url = 'www.walmart.ca'
         whois_url = 'https://www.whoisxmlapi.com/whoisserver/WhoisService?domainName=www.walmart.com&username=kwang&password=123456'
@@ -271,11 +276,7 @@ class SiteInfo:
         google_timezone_url = 'https://maps.googleapis.com/maps/api/timezone/xml?location={0},{1}&timestamp={2}&key=AIzaSyAwuYCM0yJEKoDexqItPqO16ViE3169yZE'. \
                                format(latlon[0], latlon[1], t)
         self.get_timezone_from_google_timezone(google_timezone_url)
-        
-        '''
-        Get Alexa ranking from Alexa Web Information Service API
-        '''
-        self.get_ranking_from_awis(self.url)
+
         return self.info
       except Exception as e:
         self.logger.error('exception {0}:{1}'.format(self.url, str(e)))
