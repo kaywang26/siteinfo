@@ -1,7 +1,8 @@
 #! python
 #-----------------------------------------------------------------------------
 #  File:        siteinfo_web_app.py
-#  Description: This Web application is used for editing TV promotion text; 
+#  Description: This Web application is used for getting specific information
+#               for a url. 
 #  It's based on a web framework CherryPy which is a pure Python library.
 #
 #  Revision:
