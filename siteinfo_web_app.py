@@ -128,22 +128,22 @@ class SiteInfoWeb(object):
         site = SiteInfo(urlinput)
         site_info = site.get_site_info()
         section = """<h3>{0}</h3>""".format(urlinput)
-        for k, v in site_info.items():
+        for item in site_info:
             section += """<p>
-                          <b>{0}&nbsp;&nbsp;</b>""".format(k)        
-            if k == 'Keywords':
+                          <b>{0}&nbsp;&nbsp;</b>""".format(item[0])        
+            if item[0] == 'Keywords':
                 section += """
                 <textarea rows = "6" cols = "100">{0}</textarea>
-                </p>""".format(v)
+                </p>""".format(item[1])
                 
-            elif k == 'Description' or k == 'Title':
+            elif item[0] == 'Description' or item[0] == 'Title':
                 section += """
                 <textarea rows = "3" cols = "100">{0}</textarea> 
-                </p>""".format(v)
+                </p>""".format(item[1])
             else:
                 section += """
                 <textarea rows = "1" cols= "100">{0}</textarea> 
-                </p>""".format(v)            
+                </p>""".format(item[1])            
         return self._template(section)
  
 # instantiate instance of the class SiteInfoWeb   

@@ -40,7 +40,6 @@ Required Python Libraries and Web Drivers:
     
 The response format of the 3rd party RESTful API is XML, I use Python standard library ElementTree to parse          
 '''
-#! python
 import os
 import sys
 import urllib.request
@@ -50,6 +49,7 @@ import time
 import logging, logging.handlers
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as et
+from collections import OrderedDict
 import awis
 from selenium import webdriver
 
@@ -61,8 +61,9 @@ class SiteInfo:
         self.app_path = os.path.abspath(os.getcwd())
         self.logger = logging.getLogger('siteinfo.py')
         self.loginit() 
-        self.info = {} # dictionary storing site information
-                       # e.g. {'title':'Amazon.com', 'keywords':'Amazon, Amazon.com, Books', ... }        
+        self.info = [] # list of lists storing site information
+                       # e.g. [['title','Amazon.com'], ['keywords','Amazon, Amazon.com, Books'] , ... ]  
+        self.address = None                       
         
     def loginit(self):
         loghdlr = logging.FileHandler(os.path.join(self.app_path, 'siteinfo.log'))
@@ -92,8 +93,8 @@ class SiteInfo:
         
         root = et.fromstring(resp)
         with open(os.path.join(self.app_path, 'whois.xml'), 'w', encoding='utf-8') as f:
-            print(et.tostring(root, encoding="unicode"), file=f) 
-        
+            print(et.tostring(root, encoding="unicode"), file=f)
+            
         admin = root.find('.//administrativeContact')
         if admin == None:
             return False
@@ -110,8 +111,9 @@ class SiteInfo:
                 elif child.tag == 'country':
                     country = child.text 
                 else:
-                    self.info[child.tag] = child.text
-        self.info['Address'] = '{0} {1} {2} {3} {4}'.format(street1, city, state, postalCode, country)
+                    self.info.append([child.tag, child.text])
+        self.address = '{0} {1} {2} {3} {4}'.format(street1, city, state, postalCode, country)           
+        self.info.append(['Address', self.address])
       except Exception as e:
         self.logger.error('exception accessing {0}:{1}'.format(whois_url, str(e)))
         return False        
@@ -122,7 +124,7 @@ class SiteInfo:
         #status, resp = self.httpget(builtwith_url)
         driver = webdriver.Firefox(executable_path = 'C:\\Users\\qch2041\\AppData\\Local\\Programs\\Python\\Python36-32\\geckodriver.exe')
         driver.get(builtwith_url)
-        time.sleep(8)
+        time.sleep(5)
         resp = driver.page_source
         soup = BeautifulSoup(resp, 'html.parser')
         driver.quit()
@@ -144,7 +146,7 @@ class SiteInfo:
               break
           techitem_a_tags = techitem_div_tag.find('h3').find_all('a', limit=2)
           findit = techitem_a_tags[1]
-          self.info['E-commerce platform ' + str(i)] = findit.string
+          self.info.append(['E-commerce platform ' + str(i), findit.string])
           i += 1
       except Exception as e:
         self.logger.error('exception accessing {0}:{1}'.format(builtwith_url, str(e)))
@@ -155,7 +157,7 @@ class SiteInfo:
         latlon = []
         root = et.fromstring(resp)
         with open(os.path.join(self.app_path, 'google_geocode.xml'), 'w', encoding='utf-8') as f:
-            print(et.tostring(root, encoding="unicode"), file=f) 
+            print(et.tostring(root, encoding="unicode"), file=f)
             
         location = root.find('.//location')
         latlon.append(location.find('lat').text) 
@@ -174,8 +176,8 @@ class SiteInfo:
         offset = root.find('.//raw_offset').text
         offset = float(offset)/3600
         timezone_name = root.find('.//time_zone_name').text
-        self.info['Time Zone Offset(hour)'] = offset 
-        self.info['Time Zone Name'] = timezone_name  
+        self.info.append(['Time Zone Offset(hour)', offset]) 
+        self.info.append(['Time Zone Name', timezone_name])  
       except Exception as e:
         self.logger.error('exception accessing {0}:{1}'.format(google_timezone_url, str(e)))     
 
@@ -191,8 +193,8 @@ class SiteInfo:
         
         root = tree.getroot() 
         with open(os.path.join(self.app_path, 'alexa.xml'), 'w', encoding='utf-8') as f:
-            print(et.tostring(root, encoding="unicode"), file=f)        
-        self.info['Alexa Global Ranking'] = root.find('.//ns1:Rank', ns).text
+            print(et.tostring(root, encoding="unicode"), file=f)
+        self.info.append(['Alexa Global Ranking', root.find('.//ns1:Rank', ns).text])
       except Exception as e:
         self.logger.error('exception calling AWIS API for {0}:{1}'.format(url, str(e)))
         
@@ -201,11 +203,11 @@ class SiteInfo:
         #status, resp = self.httpget(self.url)
         driver = webdriver.Firefox(executable_path = 'C:\\Users\\qch2041\\AppData\\Local\\Programs\\Python\\Python36-32\\geckodriver.exe')
         driver.get('http://' + self.url)
-        time.sleep(8)
+        time.sleep(5)
         resp = driver.page_source
         soup = BeautifulSoup(resp, 'html.parser')
         driver.quit()
-        #with open(os.path.join(self.app_path, 'walmart.html'), 'w', encoding='utf-8') as f:
+        #with open(os.path.join(self.app_path, 'page_source.html'), 'w', encoding='utf-8') as f:
             #print(soup.prettify(), file=f)
       except Exception as e:
         self.logger.error('exception accessing {0}:{1}'.format(self.url, str(e)))
@@ -215,19 +217,39 @@ class SiteInfo:
       try:    
         title = soup.title
         if title != None:    
-            self.info['Title'] = title.string 
+            self.info.append(['Title', title.string]) 
         else:
             title = soup.find('meta', {'name':'title'})
             if title != None:
-                self.info['Title'] = title['content']
+                self.info.append(['Title', title['content']])
         
         description = soup.find('meta', {'name':'description'})
         if description != None:
-            self.info['Description'] = description['content']
+            self.info.append(['Description', description['content']])
         
         keywords = soup.find('meta', {'name':re.compile('^keyword')}) # some sites like thebay uses "keyword" instead of "keywords"
         if keywords != None:
-            self.info['Keywords'] = keywords['content']
+            self.info.append(['Keywords', keywords['content']])
+            
+        # Find social media pages
+        facebook_pages = soup.find('a', {'href':re.compile('facebook.com')}) 
+        if facebook_pages != None:
+            self.info.append(['facebook', facebook_pages['href']])  
+        twitter_pages = soup.find('a', {'href':re.compile('twitter.com')}) 
+        if twitter_pages != None:
+            self.info.append(['twitter', twitter_pages['href']]) 
+        linkedin_pages = soup.find('a', {'href':re.compile('linkedin.com')}) 
+        if linkedin_pages != None:
+            self.info.append(['linkedin', linkedin_pages['href']]) 
+        youtube_pages = soup.find('a', {'href':re.compile('youtube.com')}) 
+        if youtube_pages != None:
+            self.info.append(['youtube', youtube_pages['href']]) 
+        instagram_pages = soup.find('a', {'href':re.compile('instagram.com')}) 
+        if instagram_pages != None:
+            self.info.append(['instagram', instagram_pages['href']]) 
+        googleplus_pages = soup.find('a', {'href':re.compile('google.com/\+')}) 
+        if googleplus_pages != None:
+            self.info.append(['google+', googleplus_pages['href']])            
       except Exception as e:
         self.logger.error('exception parsing source of {0}:{1}'.format(self.url, str(e)))
      
@@ -258,7 +280,7 @@ class SiteInfo:
         Get lat/long by calling Google Map Geocoding RESTful API 
         google_geocode_url = 'https://maps.googleapis.com/maps/api/geocode/xml?address=xxxxx&key=AIzaSyC2NcgPW08eIRHNAElrYUw5zJgVroFI7Yw'
         '''
-        address = self.info['Address'].replace(' ', '+')
+        address = self.address.replace(' ', '+')
         google_geocode_url = 'https://maps.googleapis.com/maps/api/geocode/xml?address={0}&key=AIzaSyC2NcgPW08eIRHNAElrYUw5zJgVroFI7Yw'.\
                               format(address)
         latlon = self.get_latlon_from_google_geocode(google_geocode_url)  
@@ -273,7 +295,7 @@ class SiteInfo:
         google_timezone_url = 'https://maps.googleapis.com/maps/api/timezone/xml?location={0},{1}&timestamp={2}&key=AIzaSyAwuYCM0yJEKoDexqItPqO16ViE3169yZE'. \
                                format(latlon[0], latlon[1], t)
         self.get_timezone_from_google_timezone(google_timezone_url)
-        
+
         return self.info
       except Exception as e:
         self.logger.error('exception {0}:{1}'.format(self.url, str(e)))
